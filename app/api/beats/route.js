@@ -1,24 +1,25 @@
 const { knex } = require('../../../utils');
 
 export async function GET() {
-  console.debug('GET /api/beats');
+  console.debug(new Date(), 'GET /api/beats');
 
   const [beats, channels] = await Promise.all([
-    knex('beats'),
-    knex('beats').groupBy('channel').select('channel', knex.raw('count(datetime) as minutes')).orderBy('channel'),
+    knex('beats').orderBy('datetime', 'desc').limit(10),
+    knex('beats').groupBy('channel').select('channel', knex.raw('count(datetime) as minutes')).whereNotNull('channel').orderBy('channel'),
   ]);
 
   return Response.json({ beats, channels });
 }
 
 export async function POST(request) {
-  console.debug('POST /api/beats');
+  console.debug(new Date(), 'POST /api/beats');
 
   try {
-    const boxes = await knex('boxes');
+    const boxes = await knex('boxes').where({ active: true });
 
     const datetime = new Date();
     datetime.setSeconds(0);
+    datetime.setMilliseconds(0);
 
     const data = await Promise.all(boxes.map(async (box) => {
       const controller = new AbortController();
@@ -28,9 +29,8 @@ export async function POST(request) {
         const response = await fetch(`http://${box.ip}:8080/tv/getTuned`, { cache: 'no-cache', signal: controller.signal });
         clearTimeout(id);
         const { title, major, recType } = await response.json();
-        return { box_id: box.id, datetime, title, channel: major, recorded: !!recType };
+        return { box_id: box.id, datetime, title, channel: major || null, recorded: !!recType };
       } catch (error) {
-        console.error(box.ip, error.code, error.message);
         return { box_id: box.id, datetime };
       };
     }));
@@ -39,7 +39,7 @@ export async function POST(request) {
 
     return Response.json(data);
   } catch (error) {
-    console.error(error);
+    console.error(new Date(), error);
     return Response.json({ message: error.message || 'Error!' }, { status: 500 });
   }
 }

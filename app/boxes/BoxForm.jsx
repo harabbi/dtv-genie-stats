@@ -17,7 +17,7 @@ export default function BoxForm({ box = { name: '', ip: '', active: true } }) {
   const handleDelete = async (event) => {
     event.stopPropagation();
 
-    const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}boxes/${box.id}`;
+    const url = process.env.NEXT_PUBLIC_API_ENDPOINT + `boxes/${box.id}`;
     const response = await fetch(url, { method: 'DELETE' });
 
     if (response.ok) {
@@ -32,12 +32,10 @@ export default function BoxForm({ box = { name: '', ip: '', active: true } }) {
 
     const { id, ...boxData } = changes;
 
-    let url = process.env.NEXT_PUBLIC_API_ENDPOINT + 'boxes';
-    if (id) url += `/${id}`;
-
+    const url = process.env.NEXT_PUBLIC_API_ENDPOINT + `boxes${id ? `/${id}` : ''}`;
     const response = await fetch(url, {
+      body: JSON.stringify(boxData),
       method: id ? 'PUT' : 'POST',
-      body: JSON.stringify(boxData)
     });
 
     if (response.ok) {

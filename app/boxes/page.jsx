@@ -1,7 +1,10 @@
 import styles from "./boxes.module.css";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Boxes() {
-  const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT + 'boxes', { next: { revalidate: 5 }});
+  const url = process.env.NEXT_PUBLIC_API_ENDPOINT + 'boxes';
+  const response = await fetch(url, { next: { revalidate: 5 }});
   const boxes = await response.json();
 
   return (

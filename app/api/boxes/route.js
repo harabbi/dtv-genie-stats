@@ -1,7 +1,7 @@
 const { knex } = require('../../../utils');
 
 export async function GET() {
-  console.debug('GET /api/boxes');
+  console.debug(new Date(), 'GET /api/boxes');
 
   const data = await knex('boxes');
 
@@ -9,7 +9,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  console.debug('POST /api/boxes');
+  console.debug(new Date(), 'POST /api/boxes');
 
   try {
     const payload = await request.json();
@@ -17,7 +17,7 @@ export async function POST(request) {
 
     return Response.json(data);
   } catch (error) {
-    console.error(error);
+    console.error(new Date(), error);
     return Response.json({ message: error.message || 'Error!' }, { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 const { knex } = require('../../../../utils');
 
 export async function GET(_request, { params }) {
-  console.debug(`GET /api/boxes/${params.id}`);
+  console.debug(new Date(), `GET /api/boxes/${params.id}`);
 
   try {
     if (!params.id) return Response.json({ message: 'Missing id!' }, { status: 400 });
@@ -11,13 +11,13 @@ export async function GET(_request, { params }) {
 
     return Response.json(data);
   } catch (error) {
-    console.error(error);
+    console.error(new Date(), error);
     return Response.json({ message: error.message || 'Error!' }, { status: 500 });
   }
 }
 
 export async function PUT(request, { params }) {
-  console.debug(`PUT /api/boxes/${params.id}`);
+  console.debug(new Date(), `PUT /api/boxes/${params.id}`);
 
   try {
     const payload = await request.json();
@@ -25,13 +25,13 @@ export async function PUT(request, { params }) {
 
     return Response.json(data);
   } catch (error) {
-    console.error(error);
+    console.error(new Date(), error);
     return Response.json({ message: error.message || 'Error!' }, { status: 500 });
   }
 }
 
 export async function DELETE(_request, { params }) {
-  console.debug(`DELETE /api/boxes/${params.id}`);
+  console.debug(new Date(), `DELETE /api/boxes/${params.id}`);
 
   try {
     if (!params.id) return Response.json({ message: 'Missing id!' }, { status: 400 });
@@ -40,7 +40,7 @@ export async function DELETE(_request, { params }) {
 
     return Response.json({ message: 'Deleted!' });
   } catch (error) {
-    console.error(error);
+    console.error(new Date(), error);
     return Response.json({ message: error.message || 'Error!' }, { status: 500 });
   }
 }
